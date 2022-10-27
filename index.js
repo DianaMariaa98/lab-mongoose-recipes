@@ -6,6 +6,7 @@ const Recipe = require('./models/Recipe.model');
 const data = require('./data');
 
 const MONGODB_URI = 'mongodb://localhost:27017/recipe-app';
+const myRecipe = ({title: 'Bolognese', cuisine: 'Italian'});
 
 //Method 1 : Using Async Await
 
@@ -17,8 +18,25 @@ const manageRecipes = async () => {
 
     // Before adding any recipes to the database, let's remove all existing ones
     await Recipe.deleteMany();
+    await Recipe.create(myRecipe);
+    console.log(myRecipe.title);
+    await Recipe.insertMany(data);
+    for(let i=0;i<data.length;i++){
+      console.log(data[i].title);
+    }
 
+    let updateRecipe = await Recipe.findOneAndUpdate(
+      {title:'Rigatoni alla Genovese'},
+      {duration :100 },
+      {new: true}, 
+      );
+      console.log(updateRecipe.duration);
+
+    let removeCake = await Recipe.deleteOne({title: 'Carrot Cake'});
+    console.log(removeCake);
+    
     // Run your code here, after you have insured that the connection was made
+    dbConnection.disconnect();
   } catch (error) {
     console.log(error);
   }
